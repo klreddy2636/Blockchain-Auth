@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Include MetaMask JavaScript library -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <!-- Include MetaMask JavaScript library -->
+<!--<script src="https://unpkg.com/browse/eth-sig-util@3.0.1/dist/index.js"></script>-->
+
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="post" id="loginForm">
+        <!-- Add a field for private key (hidden) -->
+        <!--  <input type="hidden" name="private_key" id="private_key">       -->
+        <!-- Add a field for private key (hidden) -->
+        <input type="hidden" name="signature" id="signature">
+        <label for="user_data">User Data:</label>
+        <input type="text" name="user_data" id="user_data" required>
+        <br>
+        <!-- Add a button to sign the transaction with MetaMask -->
+        <button type="button" onclick="signTransaction()">Sign Transaction with MetaMask</button>
+        <br>
+        <button type="submit">Login</button>
+    </form>
+    <script>
+        async function signTransaction() {
+            try {
+                
+                const user_data = document.getElementById('user_data').value;
+    
+                // Use web3 provider from MetaMask
+                const provider = window.ethereum;
+                await provider.request({method:'eth_requestAccounts'});
+                const web3 = new Web3(provider);
+    
+                // Get the account from MetaMask
+                const accounts = await web3.eth.getAccounts();
+                const account = accounts[0];
+    
+                // Create a message to sign
+                const message = 'Sign this message to authenticate';
+    
+                // Sign the message
+                const signature = await web3.eth.personal.sign(message, account, '');
+    
+                // Set the signature in the hidden field
+               // document.getElementById('private_key').value = private_key;
+                document.getElementById('signature').value = signature;
+    
+                // Submit the form
+                document.getElementById('loginForm').submit();
+            } catch (error) {
+                console.error('Error signing transaction with MetaMask:', error);
+            }
+        }
+    </script>
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <form method="post">
+        <label for="private_key">Enter Private Key:</label>
+        <input type="text" name="private_key" required>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
+-->
